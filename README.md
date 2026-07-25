@@ -190,14 +190,12 @@ Before hardware implementation, core logic blocks were independently verified at
 
 ### Supporting Logic (Comparators, Adders)
 
-| Component | Diagram |
-|---|---|
-| Half Adder | ![Half Adder](docs/verification/Half_Adder.png) |
-| Full Adder | ![Full Adder](docs/verification/Full_Adder.png) |
-| 3-bit comparator | ![3-bit comparator](docs/verification/3_bit_comparator.png) |
-| 4-bit comparator | ![4-bit comparator](docs/verification/4-bit_comparator.png) |
-| 5-bit comparator | ![5-bit comparator](docs/verification/5-bit_comparator.png) |
-| 8-bit comparator | ![8-bit comparator](docs/verification/8-bit_comparator.png) |
+| Half Adder | ![Half Adder](docs/verification/Half%20Adder.png) |
+| Full Adder | ![Full Adder](docs/verification/Full%20Adder.png) |
+| 3-bit comparator | ![3-bit comparator](docs/verification/3_bit%20comparator.png) |
+| 4-bit comparator | ![4-bit comparator](docs/verification/4-bit%20comparator.png) |
+| 5-bit comparator | ![5-bit comparator](docs/verification/5-bit%20comparator.png) |
+| 8-bit comparator | ![8-bit comparator](docs/verification/8-bit%20comparator.png) |
 
 ### Tamper-Detection FSM
 
