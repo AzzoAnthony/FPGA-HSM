@@ -163,6 +163,52 @@ This design is inspired by but not certified to the following standards:
 
 ---
 
+---
+
+## Gate-Level Verification
+
+[#gate-level-verification](#gate-level-verification)
+
+Before hardware implementation, core logic blocks were independently verified at the gate level using CircuitVerse to confirm correctness ahead of synthesis.
+
+### AES Core Components
+
+| Component | Diagram |
+|---|---|
+| S-box | ![S-box](docs/verification/S-box.png) |
+| X-time (GF(2^8) multiplication) | ![X-time](docs/verification/X-time.png) |
+| MixColumns | ![MixColumns](docs/verification/MixColumn.png) |
+| AddRoundKey | ![AddRoundKey](docs/verification/Add_Round_Key.png) |
+
+### UART Components
+
+| Component | Diagram |
+|---|---|
+| UART TX | ![UART TX](docs/verification/UART_TX.png) |
+| UART RX | ![UART RX](docs/verification/UART_RX.png) |
+| Baud rate counter | ![Baud counter](docs/verification/Baud_counter.png) |
+
+### Supporting Logic (Comparators, Adders)
+
+| Component | Diagram |
+|---|---|
+| Half Adder | ![Half Adder](docs/verification/Half_Adder.png) |
+| Full Adder | ![Full Adder](docs/verification/Full_Adder.png) |
+| 3-bit comparator | ![3-bit comparator](docs/verification/3_bit_comparator.png) |
+| 4-bit comparator | ![4-bit comparator](docs/verification/4-bit_comparator.png) |
+| 5-bit comparator | ![5-bit comparator](docs/verification/5-bit_comparator.png) |
+| 8-bit comparator | ![8-bit comparator](docs/verification/8-bit_comparator.png) |
+
+### Tamper-Detection FSM
+
+Verified across three views due to its size and complexity.
+
+![FSM part 1](docs/verification/FSM.png)
+![FSM part 2](docs/verification/FSM-2.png)
+![FSM part 3](docs/verification/FSM-3.png)
+
+---
+
 ## Author
 
 Anthony Azzo
