@@ -10,7 +10,8 @@ module hsm_fsm (
     output logic         uart_tx_start,
     output logic [7:0]   uart_tx_byte,
     output logic         aes_start,
-    output logic [127:0] aes_plaintext
+    output logic [127:0] aes_plaintext,
+    output logic         key_load
 );
 
     typedef enum logic [2:0] {
@@ -77,9 +78,11 @@ module hsm_fsm (
             uart_tx_byte  <= 8'h00;
             aes_plaintext <= 128'h0;
             send_count    <= 5'd0;
+            key_load      <= 1'b0;
         end else begin
             aes_start     <= 1'b0;
             uart_tx_start <= 1'b0;
+            key_load      <= 1'b0;
 
             case (current_state)
                 IDLE: begin
@@ -125,6 +128,7 @@ module hsm_fsm (
                     end
                 end
                 KEYGEN: begin
+                    key_load       <= 1'b1;
                     send_buffer[0] <= 8'hAA;
                     send_count     <= 5'd1;
                 end
