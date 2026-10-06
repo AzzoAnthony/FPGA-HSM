@@ -19,6 +19,7 @@ module hsm_top (
     logic        lockout;
 
     assign lockout = tamper;
+    logic tx_busy;
 
     uart_rx rx_inst (
         .clk          (clk),
@@ -35,6 +36,7 @@ module hsm_top (
         .byte_send  (tx_byte),
         .serial_line(uart_txd),
         .done       ()
+        .busy       (tx_busy)
     );
 
     aes_key_schedule key_sched_inst (
@@ -61,6 +63,7 @@ module hsm_top (
         .uart_rx_byte   (rx_byte),
         .aes_done       (aes_valid_out),
         .aes_result     (aes_result),
+        .uart_tx_busy   (tx_busy),
         .uart_tx_start  (tx_start),
         .uart_tx_byte   (tx_byte),
         .aes_start      (aes_start),
