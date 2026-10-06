@@ -4,7 +4,7 @@ module uart_tx (
     input  logic       start,
     input  logic [7:0] byte_send,
     output logic       serial_line,
-    output logic       done
+    output logic       done,
     output logic       busy
 );
 
