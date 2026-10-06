@@ -19,11 +19,25 @@ module hsm_top (
     logic [127:0] round_keys [0:10];
     logic         lockout;
 
+    logic         tamper_evt;
+    logic         tamper_latched;
+
     logic [127:0] lfsr;
     logic [127:0] key_reg;
     logic         key_load;
 
-    assign lockout = tamper;
+    // KEY1 on the DE10-Lite is active low: 1 = released, 0 = pressed.
+    assign tamper_evt = ~tamper;
+
+    // Tamper latch: set-only, clears only on reset or power cycle.
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            tamper_latched <= 1'b0;
+        else if (tamper_evt)
+            tamper_latched <= 1'b1;
+    end
+
+    assign lockout = tamper_latched;
 
     // 128-bit maximal-length LFSR, taps 128/126/101/99.
     // NOT a cryptographic RNG - placeholder for a TRNG + DRBG.
@@ -79,7 +93,7 @@ module hsm_top (
     hsm_fsm fsm_inst (
         .clk            (clk),
         .rst_n          (rst_n),
-        .tamper         (tamper),
+        .tamper         (tamper_latched),
         .uart_rx_valid  (rx_valid),
         .uart_rx_byte   (rx_byte),
         .aes_done       (aes_valid_out),
@@ -92,6 +106,6 @@ module hsm_top (
         .key_load       (key_load)
     );
 
-    assign led_locked = tamper;
+    assign led_locked = tamper_latched;
 
 endmodule
