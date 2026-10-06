@@ -5,6 +5,7 @@ module uart_tx (
     input  logic [7:0] byte_send,
     output logic       serial_line,
     output logic       done
+    output logic       busy
 );
 
     logic [8:0] baud_counter;
@@ -12,6 +13,8 @@ module uart_tx (
     logic [3:0] bit_index;
     logic [9:0] shift_reg;
     logic       sending;
+
+    assign busy = sending;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
