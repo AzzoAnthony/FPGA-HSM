@@ -7,19 +7,40 @@ module hsm_top (
     output logic led_locked
 );
 
-    logic        rx_valid;
-    logic [7:0]  rx_byte;
-    logic        tx_start;
-    logic [7:0]  tx_byte;
-    logic        aes_start;
+    logic         rx_valid;
+    logic [7:0]   rx_byte;
+    logic         tx_start;
+    logic [7:0]   tx_byte;
+    logic         tx_busy;
+    logic         aes_start;
     logic [127:0] aes_plaintext;
-    logic        aes_valid_out;
+    logic         aes_valid_out;
     logic [127:0] aes_result;
     logic [127:0] round_keys [0:10];
-    logic        lockout;
+    logic         lockout;
+
+    logic [127:0] lfsr;
+    logic [127:0] key_reg;
+    logic         key_load;
 
     assign lockout = tamper;
-    logic tx_busy;
+
+    // 128-bit maximal-length LFSR, taps 128/126/101/99.
+    // NOT a cryptographic RNG - placeholder for a TRNG + DRBG.
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            lfsr <= 128'h0123456789ABCDEFFEDCBA9876543210;
+        else
+            lfsr <= {lfsr[126:0],
+                     lfsr[127] ^ lfsr[125] ^ lfsr[100] ^ lfsr[98]};
+    end
+
+    // Master key register: loaded on KEYGEN, zeroized on lockout.
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)        key_reg <= 128'h0;
+        else if (lockout)  key_reg <= 128'h0;
+        else if (key_load) key_reg <= lfsr;
+    end
 
     uart_rx rx_inst (
         .clk          (clk),
@@ -35,12 +56,12 @@ module hsm_top (
         .start      (tx_start),
         .byte_send  (tx_byte),
         .serial_line(uart_txd),
-        .done       ()
+        .done       (),
         .busy       (tx_busy)
     );
 
     aes_key_schedule key_sched_inst (
-        .key_in     (128'hDEADBEEFCAFEBABE0123456789ABCDEF),
+        .key_in     (key_reg),
         .round_keys (round_keys)
     );
 
@@ -67,7 +88,8 @@ module hsm_top (
         .uart_tx_start  (tx_start),
         .uart_tx_byte   (tx_byte),
         .aes_start      (aes_start),
-        .aes_plaintext  (aes_plaintext)
+        .aes_plaintext  (aes_plaintext),
+        .key_load       (key_load)
     );
 
     assign led_locked = tamper;
