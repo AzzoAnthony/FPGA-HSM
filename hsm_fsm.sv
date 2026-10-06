@@ -6,6 +6,7 @@ module hsm_fsm (
     input  logic [7:0]   uart_rx_byte,
     input  logic         aes_done,
     input  logic [127:0] aes_result,
+    input  logic         uart_tx_busy,
     output logic         uart_tx_start,
     output logic [7:0]   uart_tx_byte,
     output logic         aes_start,
@@ -134,12 +135,12 @@ module hsm_fsm (
                     send_count     <= 5'd1;
                 end
                 SEND: begin
-                    if (send_count > 0) begin
+                    if (send_count > 0 && !uart_tx_busy && !uart_tx_start) begin
                         uart_tx_byte  <= send_buffer[17 - send_count];
                         uart_tx_start <= 1'b1;
                         send_count    <= send_count - 1;
+                        end
                     end
-                end
             endcase
         end
     end
